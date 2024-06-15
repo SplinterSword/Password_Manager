@@ -10,11 +10,16 @@ const Manager = () => {
   const [form, setform] = useState({ site: "", username: "", password: "" });
   const [passwordArray, setPasswordArray] = useState([]);
 
-  useEffect(() => {
-    let passwords = localStorage.getItem("password");
+  const getPasswords = async () => {
+    let req = await fetch("http://localhost:3000");
+    let passwords = await req.json();
     if (passwords) {
-      setPasswordArray(JSON.parse(passwords));
+      setPasswordArray(passwords);
     }
+  };
+
+  useEffect(() => {
+    getPasswords();
   }, []);
 
   const showPassword = () => {
@@ -27,56 +32,53 @@ const Manager = () => {
     }
   };
 
-  const savePassword = () => {
-    if (form.site.length > 3 && form.password.length>3 && form.username.length>3){
+  const savePassword = async () => {
+    if (form.site.length > 3 && form.password.length > 3 && form.username.length > 3) {
+
+      // If any such id exist in the database delete it
+      await fetch("http://localhost:3000", {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: form.id }),
+      });
+
       setPasswordArray([...passwordArray, { ...form, id: uuidv4() }]);
-      localStorage.setItem(
-        "password",
-        JSON.stringify([...passwordArray, { ...form, id: uuidv4() }])
-      );
+      await fetch("http://localhost:3000", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...form, id: uuidv4() }),
+      });
       setform({ site: "", username: "", password: "" });
+    } else {
+      alert("Error: Password not saved");
     }
-    else {
-      alert("Error: Password not saved")
-    }
-    
-    // toast("Password Saved Successfully", {
-    //   position: "top-right",
-    //   autoClose: 5000,
-    //   hideProgressBar: false,
-    //   closeOnClick: true,
-    //   pauseOnHover: true,
-    //   draggable: true,
-    //   progress: undefined,
-    //   theme: "dark",
-    // });
   };
 
-  const deletePassword = (id) => {
+  const deletePassword = async (id) => {
     let c = confirm("Do you really want to delete this password?");
     if (c) {
       setPasswordArray(passwordArray.filter((item) => item.id != id));
-      localStorage.setItem(
-        "password",
-        JSON.stringify(passwordArray.filter((item) => item.id != id))
-      );
-      // toast("Password Deleted", {
-      //   position: "top-right",
-      //   autoClose: 5000,
-      //   hideProgressBar: false,
-      //   closeOnClick: true,
-      //   pauseOnHover: true,
-      //   draggable: true,
-      //   progress: undefined,
-      //   theme: "dark",
-      // });
+
+      let res = await fetch("http://localhost:3000", {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
     }
   };
 
   const editPassword = (id) => {
-    setform(passwordArray.filter((item) => item.id == id)[0]);
+    setform({...passwordArray.filter((item) => item.id == id)[0], id: id});
     setPasswordArray(passwordArray.filter((item) => item.id != id));
-    // localStorage.setItem("password", JSON.stringify(passwordArray.filter(item=>item.id != id)))
   };
 
   const handleChange = (e) => {
@@ -213,7 +215,7 @@ const Manager = () => {
                           {item.username}
                         </td>
                         <td className="text-center border border-white py-2">
-                          {item.password}
+                          {"*".repeat(item.password.length)}
                         </td>
                         <td className="text-center border border-white py-2">
                           <div className="flex justify-center items-center gap-2">
