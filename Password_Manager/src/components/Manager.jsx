@@ -11,7 +11,7 @@ const Manager = () => {
   const [passwordArray, setPasswordArray] = useState([]);
 
   const getPasswords = async () => {
-    let req = await fetch("http://localhost:3000");
+    let req = await fetch("https://backend-973390128867.us-central1.run.app");
     let passwords = await req.json();
     if (passwords) {
       setPasswordArray(passwords);
@@ -36,7 +36,7 @@ const Manager = () => {
     if (form.site.length > 3 && form.password.length > 3 && form.username.length > 3) {
 
       // If any such id exist in the database delete it
-      await fetch("http://localhost:3000", {
+      await fetch("https://backend-973390128867.us-central1.run.app", {
         method: "DELETE",
         headers: {
           Accept: "application/json",
@@ -46,7 +46,7 @@ const Manager = () => {
       });
 
       setPasswordArray([...passwordArray, { ...form, id: uuidv4() }]);
-      await fetch("http://localhost:3000", {
+      await fetch("https://backend-973390128867.us-central1.run.app", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -65,7 +65,7 @@ const Manager = () => {
     if (c) {
       setPasswordArray(passwordArray.filter((item) => item.id != id));
 
-      let res = await fetch("http://localhost:3000", {
+      let res = await fetch("https://backend-973390128867.us-central1.run.app", {
         method: "DELETE",
         headers: {
           Accept: "application/json",
