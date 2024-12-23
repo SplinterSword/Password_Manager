@@ -6,7 +6,7 @@ const bodyparser = require('body-parser')
 
 dotenv.config()
 
-const url = 'mongodb://localhost:27017';
+const url = 'mongodb+srv://sparshj2003:cC509958@splintercluster.5cfj7.mongodb.net/?retryWrites=true&w=majority&appName=SplinterCluster';
 const client = new MongoClient(url);
 
 const dbName = 'passop';

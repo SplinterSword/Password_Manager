@@ -16,10 +16,12 @@ const Navbar = () => {
                     <a className='hover:font-bold' href="#">Contact</a>
                 </li>
             </ul> */}
-            <button className='text-white my-5 px-3 py-1 rounded-lg flex gap-2 justify-center items-center ring-white ring-1'>
-                <img className='invert w-9' src="github.svg" alt="github logo" />
-                GitHub
-            </button>
+            <a href="https://github.com/SplinterSword/Password_Manager.git">
+                <button className='text-white my-5 px-3 py-1 rounded-lg flex gap-2 justify-center items-center ring-white ring-1'>
+                    <img className='invert w-9' src="github.svg" alt="github logo" />
+                    GitHub
+                </button>
+            </a>
         </div>
     </nav>
   )
